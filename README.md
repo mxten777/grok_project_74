@@ -37,21 +37,30 @@
 
 ```
 src/
-├── components/          # 재사용 컴포넌트
-│   ├── EmployeeDashboard.tsx
-│   └── AdminDashboard.tsx
-├── pages/               # 페이지 컴포넌트
-│   ├── Login.tsx
-│   ├── Dashboard.tsx
-│   ├── LeaveApply.tsx
-│   ├── LeaveHistory.tsx
-│   └── AdminRequests.tsx
-├── firebase/            # Firebase 설정
+├── components/          # 재사용 가능한 UI 컴포넌트
+│   ├── AdminDashboard.tsx
+│   └── EmployeeDashboard.tsx
+├── pages/               # 라우팅 페이지 컴포넌트
+│   ├── Login.tsx        # 로그인 페이지
+│   ├── Dashboard.tsx    # 메인 대시보드
+│   ├── LeaveApply.tsx   # 연차 신청
+│   ├── LeaveHistory.tsx # 연차 내역 조회
+│   ├── AdminRequests.tsx    # 관리자: 신청 관리
+│   ├── AdminEmployees.tsx   # 관리자: 직원 관리
+│   └── AdminStatistics.tsx  # 관리자: 통계
+├── contexts/            # React Context 상태 관리
+│   └── DarkModeContext.tsx
+├── firebase/            # Firebase 설정 및 초기화
 │   └── config.ts
-├── hooks/               # 커스텀 훅 (추후)
 ├── types/               # TypeScript 타입 정의
 │   └── index.ts
-└── utils/               # 유틸리티 함수 (추후)
+├── utils/               # 유틸리티 함수들
+│   ├── dateUtils.ts     # 날짜 관련 함수
+│   ├── validation.ts    # 폼 유효성 검사
+│   └── constants.ts     # 공통 상수
+├── App.tsx              # 메인 애플리케이션 컴포넌트
+├── main.tsx             # 애플리케이션 진입점
+└── index.css            # 글로벌 스타일
 ```
 
 ## 🗄 Firestore 데이터 구조
@@ -64,6 +73,7 @@ src/
   "role": "user", // "user" | "admin"
   "annualLeaveTotal": 20,
   "annualLeaveUsed": 0,
+  "companyId": "company-id", // 다중 회사 지원
   "createdAt": "2025-12-06T00:00:00.000Z"
 }
 ```
@@ -73,6 +83,7 @@ src/
 {
   "id": "auto-generated",
   "userId": "firebase-user-id",
+  "companyId": "company-id", // 다중 회사 지원
   "startDate": "2025-12-10T00:00:00.000Z",
   "endDate": "2025-12-12T00:00:00.000Z",
   "reason": "개인 사유",
@@ -155,17 +166,26 @@ Firestore > users 컬렉션에 문서 추가 (UID는 Auth에서 복사)
 ## 🔧 개발 가이드
 
 ### 코드 스타일
-- TypeScript strict 모드
-- ESLint + Prettier
+- TypeScript strict 모드 활성화
+- ESLint 설정으로 코드 품질 관리
+- 컴포넌트별 일관된 스타일링 패턴
 - 커밋 메시지: Conventional Commits
 
 ### 환경 변수
 `.env.local` 파일 생성:
-```
+```env
 VITE_FIREBASE_API_KEY=your-api-key
 VITE_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
-# ... 기타 Firebase config
+VITE_FIREBASE_PROJECT_ID=your-project-id
+VITE_FIREBASE_STORAGE_BUCKET=your-storage-bucket
+VITE_FIREBASE_MESSAGING_SENDER_ID=your-sender-id
+VITE_FIREBASE_APP_ID=your-app-id
 ```
+
+### 개발 환경 설정
+- Node.js 18+ 필수
+- Vite 개발 서버로 HMR 지원
+- Tailwind CSS IntelliSense 확장 권장
 
 ### 빌드 및 배포
 ```bash
@@ -180,20 +200,38 @@ npm install -g vercel
 vercel --prod
 ```
 
+## ✅ 현재 구현 상태
+
+### 완료된 기능
+- [x] Firebase 인증 시스템
+- [x] 사용자 역할 기반 접근 제어
+- [x] 연차 신청/조회/관리 기본 기능
+- [x] 반응형 UI 디자인
+- [x] 다크모드 지원
+- [x] 첨부파일 업로드 기능
+- [x] 통계 대시보드 (차트, CSV 다운로드, 필터링)
+- [x] 직원 관리 페이지
+- [x] 캘린더 뷰
+- [x] TypeScript 타입 안정성
+
+### 진행 중인 작업
+- [ ] 실시간 알림 시스템 (브라우저 알림 구현 완료)
+- [ ] 고급 통계 및 리포트 기능 (PDF 내보내기 코드 추가, 빌드 오류로 임시 비활성화)
+- [ ] 푸시 알림 (브라우저 알림으로 구현)
+
 ## 🔮 향후 개선사항
 
 ### Phase 2
-- [ ] 첨부파일 업로드 (Firebase Storage)
+- [x] 첨부파일 업로드 (Firebase Storage)
 - [ ] 이메일 알림 (Cloud Functions)
-- [ ] 다크모드 토글
-- [ ] 직원 관리 페이지
-- [ ] 통계 대시보드
+- [x] 직원 관리 페이지 완성
+- [x] 고급 통계 및 리포트 기능 (PDF 내보내기)
+- [x] 캘린더 뷰
+- [x] CSV/Excel 내보내기
 
 ### Phase 3
-- [ ] 푸시 알림
-- [ ] 캘린더 뷰
-- [ ] CSV/Excel 내보내기
-- [ ] 다중 회사 지원
+- [x] 푸시 알림 (브라우저 알림 구현)
+- [x] 다중 회사 지원
 - [ ] 모바일 앱 (React Native)
 
 ## 📄 라이선스

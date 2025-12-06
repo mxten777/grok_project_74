@@ -28,10 +28,10 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
+  padding: 0;
   min-width: 320px;
   min-height: 100vh;
+  /* display: flex와 place-items: center 제거 - 이게 좌측 정렬의 원인! */
 }
 
 h1 {

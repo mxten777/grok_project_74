@@ -1,7 +1,8 @@
 {
-  "name": "grok_project_74",
+  "name": "annual-leave-manager",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "연차·휴가 관리를 위한 현대적인 웹 애플리케이션",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -14,8 +15,11 @@
     "date-fns": "^4.1.0",
     "firebase": "^12.6.0",
     "framer-motion": "^12.23.25",
+    "jspdf": "^3.0.4",
+    "lucide-react": "^0.556.0",
     "papaparse": "^5.5.3",
     "react": "^19.2.0",
+    "react-calendar": "^6.0.0",
     "react-day-picker": "^9.11.3",
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.10.1",
@@ -24,6 +28,7 @@
   "devDependencies": {
     "@eslint/js": "^9.39.1",
     "@types/node": "^24.10.1",
+    "@types/papaparse": "^5.5.1",
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.1",

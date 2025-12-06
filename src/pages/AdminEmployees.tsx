@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, where } from 'firebase/firestore';
-import { db } from '../firebase/config';
+import { db, auth } from '../firebase/config';
 import { type UserData } from '../types';
 import { Dialog } from '@headlessui/react';
 
 const AdminEmployees: React.FC = () => {
   const [employees, setEmployees] = useState<UserData[]>([]);
+  const [userData, setUserData] = useState<UserData | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [editingEmployee, setEditingEmployee] = useState<UserData | null>(null);
   const [formData, setFormData] = useState({
@@ -15,14 +16,27 @@ const AdminEmployees: React.FC = () => {
   });
 
   useEffect(() => {
+    const fetchUserData = async () => {
+      if (auth.currentUser) {
+        const userDoc = await getDocs(query(collection(db, 'users'), where('__name__', '==', auth.currentUser.uid)));
+        if (!userDoc.empty) {
+          setUserData(userDoc.docs[0].data() as UserData);
+        }
+      }
+    };
+    fetchUserData();
+  }, []);
+
+  useEffect(() => {
+    if (!userData) return;
     const fetchEmployees = async () => {
-      const q = query(collection(db, 'users'), where('role', '==', 'user'));
+      const q = query(collection(db, 'users'), where('role', '==', 'user'), where('companyId', '==', userData.companyId || 'default-company'));
       const querySnapshot = await getDocs(q);
       const emps = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as UserData));
       setEmployees(emps);
     };
     fetchEmployees();
-  }, []);
+  }, [userData]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,6 +51,7 @@ const AdminEmployees: React.FC = () => {
         ...formData,
         role: 'user',
         annualLeaveUsed: 0,
+        companyId: userData?.companyId || 'default-company',
         createdAt: new Date(),
       });
       // 새로고침 필요
@@ -64,16 +79,16 @@ const AdminEmployees: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-primary-50 p-4">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl font-bold text-primary-600 mb-6">직원 관리</h1>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-start justify-center px-4 py-12">
+      <div className="w-full max-w-6xl mx-auto">
+        <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-8 text-center">직원 관리</h1>
         <button
           onClick={() => setIsOpen(true)}
-          className="mb-6 bg-primary-500 text-white px-6 py-3 rounded-lg hover:bg-primary-600"
+          className="mb-6 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-8 py-4 rounded-xl hover:from-blue-600 hover:to-blue-700 shadow-lg hover:shadow-xl transition-all duration-300 text-lg font-medium"
         >
           직원 추가
         </button>
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+        <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-3xl shadow-2xl overflow-hidden border border-white/20">
           <table className="w-full">
             <thead className="bg-gray-50">
               <tr>

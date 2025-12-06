@@ -1,19 +1,34 @@
 import React, { useEffect, useState } from 'react';
-import { collection, getDocs, updateDoc, doc } from 'firebase/firestore';
-import { db } from '../firebase/config';
-import { type LeaveRequest } from '../types';
+import { collection, getDocs, updateDoc, doc, query, where } from 'firebase/firestore';
+import { db, auth } from '../firebase/config';
+import { type LeaveRequest, type UserData } from '../types';
 
 const AdminRequests: React.FC = () => {
   const [requests, setRequests] = useState<LeaveRequest[]>([]);
+  const [userData, setUserData] = useState<UserData | null>(null);
 
   useEffect(() => {
+    const fetchUserData = async () => {
+      if (auth.currentUser) {
+        const userDoc = await getDocs(query(collection(db, 'users'), where('__name__', '==', auth.currentUser.uid)));
+        if (!userDoc.empty) {
+          setUserData(userDoc.docs[0].data() as UserData);
+        }
+      }
+    };
+    fetchUserData();
+  }, []);
+
+  useEffect(() => {
+    if (!userData) return;
     const fetchRequests = async () => {
-      const querySnapshot = await getDocs(collection(db, 'leaveRequests'));
-      const reqs = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const q = query(collection(db, 'leaveRequests'), where('companyId', '==', userData.companyId || 'default-company'));
+      const querySnapshot = await getDocs(q);
+      const reqs = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as LeaveRequest));
       setRequests(reqs);
     };
     fetchRequests();
-  }, []);
+  }, [userData]);
 
   const handleApprove = async (id: string) => {
     await updateDoc(doc(db, 'leaveRequests', id), { status: 'approved' });
@@ -26,10 +41,10 @@ const AdminRequests: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-primary-50 p-4">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl font-bold text-primary-600 mb-6">신청 관리</h1>
-        <div className="bg-white p-8 rounded-lg shadow-lg">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-start justify-center px-4 py-12">
+      <div className="w-full max-w-6xl mx-auto">
+        <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-8 text-center">신청 관리</h1>
+        <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm p-10 rounded-3xl shadow-2xl border border-white/20">
           {requests.length === 0 ? (
             <p className="text-lg">대기 중인 신청이 없습니다.</p>
           ) : (
