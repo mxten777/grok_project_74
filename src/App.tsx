@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase/config';
 import { DarkModeProvider } from './contexts/DarkModeContext';
+import Header from './components/Header';
+import Footer from './components/Footer';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import LeaveApply from './pages/LeaveApply';
@@ -23,9 +25,30 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
     return unsubscribe;
   }, []);
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  if (loading) return (
+    <div className="min-h-screen flex flex-col">
+      <Header />
+      <main className="flex-1 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600 dark:text-gray-400">로딩 중...</p>
+        </div>
+      </main>
+      <Footer />
+    </div>
+  );
 
-  return user ? <>{children}</> : <Login />;
+  return user ? (
+    <div className="min-h-screen flex flex-col">
+      <Header />
+      <main className="flex-1">
+        {children}
+      </main>
+      <Footer />
+    </div>
+  ) : (
+    <Login />
+  );
 };
 
 function App() {

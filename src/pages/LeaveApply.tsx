@@ -47,17 +47,12 @@ const LeaveApply: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-start justify-center px-4 py-12">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="w-full max-w-4xl mx-auto">
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-12"
-        >
-          <h1 className="text-6xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">연차 신청</h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300">휴가를 신청하고 편안한 휴식을 즐겨보세요</p>
-        </motion.div>
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">연차 신청</h1>
+          <p className="text-lg text-gray-600 dark:text-gray-400">휴가를 신청하고 편안한 휴식을 즐겨보세요</p>
+        </div>
         <motion.form 
           onSubmit={handleSubmit} 
           initial={{ opacity: 0, scale: 0.95 }}

@@ -21,7 +21,8 @@
 - **역할 기반 접근**: 직원(user) / 관리자(admin) 권한 분리
 - **실시간 데이터**: Firestore를 통한 실시간 반영
 - **반응형 디자인**: 모바일 최적화 UI
-- **다크모드 지원**: 테마 전환 (추후 구현)
+- **다크모드 지원**: 테마 전환
+- **프리미엄 UI/UX**: Montserrat 폰트, 미니멀 디자인, 헤더/푸터 레이아웃 (추후 구현)
 
 ## 🛠 기술 스택
 
@@ -141,8 +142,8 @@ Firestore > users 컬렉션에 문서 추가 (UID는 Auth에서 복사)
 - Danger: Red (#EF4444)
 
 ### 타이포그래피
-- 헤드라인: Inter Bold
-- 본문: Inter Regular
+- 헤드라인: Montserrat Bold
+- 본문: Montserrat Regular
 - 모노스페이스: JetBrains Mono
 
 ### 컴포넌트 스타일
@@ -212,7 +213,7 @@ vercel --prod
 - [x] 통계 대시보드 (차트, CSV 다운로드, 필터링)
 - [x] 직원 관리 페이지
 - [x] 캘린더 뷰
-- [x] TypeScript 타입 안정성
+- [x] 프리미엄 UI/UX (헤더/푸터, Montserrat 폰트, 미니멀 디자인)
 
 ### 진행 중인 작업
 - [ ] 실시간 알림 시스템 (브라우저 알림 구현 완료)
